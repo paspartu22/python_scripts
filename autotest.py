@@ -43,7 +43,7 @@ def send_command(ser, data, value = None):
 def main():
     ports = list(serial.tools.list_ports.comports())
     for i,port in enumerate(ports):
-        print(f'{i} :{port.name}')
+        print(f'{i} : {port.description}')
     port_name = ""
     if len(ports) == 1:
         port_name = ports[0].name
