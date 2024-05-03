@@ -38,28 +38,38 @@ def send_command(ser, data, value = None):
     if (value is not None):
         data += value
     data += crcCalc(data)
+    print(data)
     ser.write(data)
 
-def main():
+
+def get_serial_port():
     ports = list(serial.tools.list_ports.comports())
     for i,port in enumerate(ports):
         print(f'{i} : {port.description}')
     port_name = ""
+    if len(ports) == 0:
+        print("No ports available")
+        return None
     if len(ports) == 1:
         port_name = ports[0].name
     else:
         port_num = int(input("enter port num: "))
         port_name = ports[port_num].name
     print(f'Open port {port_name}')
-    
     baudrate = 115200
     ser = Serial(port_name, baudrate=baudrate)
     print(f'Serial open {ser.is_open}')
     #pwm_cycle(ser)
-    i = 0
-    while 1:
-        send_command(ser, commands['open_pwm'], bytes([i]))
-        send_command(ser, commands['open_pwm'], bytes([i]))
+    return ser    
+
+def main():
+    ser = get_serial_port()
+    if ser is not None:    
+        i = 0
+        while 1:
+            send_command(ser, commands['open_pwm'], bytes([i]))
+            send_command(ser, commands['close_pwm'], bytes([i]))
+
 
 
 def pwm_cycle(ser):
